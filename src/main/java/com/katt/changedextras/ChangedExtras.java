@@ -30,6 +30,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.logging.LogUtils;
 import net.ltxprogrammer.changed.item.LatexSyringe;
 import net.ltxprogrammer.changed.item.Syringe;
+import net.ltxprogrammer.changed.init.ChangedEntities;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.KeyMapping;
@@ -84,6 +85,12 @@ public class ChangedExtras {
 
     public static final String MODID = "changedextras";
     public static final Logger LOGGER = LogUtils.getLogger();
+    private static final int PROTO_BEE_PRIMARY = 0xF5CB42;
+    private static final int PROTO_BEE_SECONDARY = 0x4D3029;
+    private static final int SNOW_LEOPARD_PRIMARY = 0xA3A3A3;
+    private static final int SNOW_LEOPARD_SECONDARY = 0x2E2E2E;
+    private static final int TIGER_SHARK_PRIMARY = 0x9AA8AD;
+    private static final int TIGER_SHARK_SECONDARY = 0x151C1F;
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
@@ -109,6 +116,14 @@ public class ChangedExtras {
             ITEMS.register("white_cat_syringe", () -> new LatexSyringe(new Item.Properties().stacksTo(1)));
     public static final RegistryObject<LatexSyringe> ARTIST_SYRINGE =
             ITEMS.register("artist_syringe", () -> new LatexSyringe(new Item.Properties().stacksTo(1).rarity(Rarity.RARE)));
+    public static final RegistryObject<LatexSyringe> PROTO_BEE_SYRINGE =
+            ITEMS.register("proto_bee_syringe", () -> new LatexSyringe(new Item.Properties().stacksTo(1)));
+    public static final RegistryObject<LatexSyringe> FURRED_LATEX_TIGER_SHARK_SYRINGE =
+            ITEMS.register("furred_latex_tiger_shark_syringe", () -> new LatexSyringe(new Item.Properties().stacksTo(1)));
+    public static final RegistryObject<LatexSyringe> FLUFFED_UP_LATEX_SNOW_LEOPARD_MALE_SYRINGE =
+            ITEMS.register("fluffed_up_latex_snow_leopard_male_syringe", () -> new LatexSyringe(new Item.Properties().stacksTo(1)));
+    public static final RegistryObject<LatexSyringe> FLUFFED_UP_LATEX_SNOW_LEOPARD_FEMALE_SYRINGE =
+            ITEMS.register("fluffed_up_latex_snow_leopard_female_syringe", () -> new LatexSyringe(new Item.Properties().stacksTo(1)));
     public static final RegistryObject<Item> THE_PALETTE =
             ITEMS.register("the_palette", () -> new Item(new Item.Properties().stacksTo(1).rarity(Rarity.RARE)));
     public static final RegistryObject<Item> ARTIST_BRUSH =
@@ -153,6 +168,18 @@ public class ChangedExtras {
     public static final RegistryObject<ForgeSpawnEggItem> JAMMER_SPAWN_EGG =
             ITEMS.register("jammer_spawn_egg",
                     () -> new ForgeSpawnEggItem(ModEntities.JAMMER, 0x36323e, 0x797881, new Item.Properties()));
+    public static final RegistryObject<ForgeSpawnEggItem> PROTO_BEE_SPAWN_EGG =
+            ITEMS.register("proto_bee_spawn_egg",
+                    () -> new ForgeSpawnEggItem(ModEntities.PROTO_BEE, PROTO_BEE_PRIMARY, PROTO_BEE_SECONDARY, new Item.Properties()));
+    public static final RegistryObject<ForgeSpawnEggItem> FURRED_LATEX_TIGER_SHARK_SPAWN_EGG =
+            ITEMS.register("furred_latex_tiger_shark_spawn_egg",
+                    () -> new ForgeSpawnEggItem(ModEntities.FURRED_LATEX_TIGER_SHARK, TIGER_SHARK_PRIMARY, TIGER_SHARK_SECONDARY, new Item.Properties()));
+    public static final RegistryObject<ForgeSpawnEggItem> FLUFFED_UP_LATEX_SNOW_LEOPARD_MALE_SPAWN_EGG =
+            ITEMS.register("fluffed_up_latex_snow_leopard_male_spawn_egg",
+                    () -> new ForgeSpawnEggItem(ModEntities.FLUFFED_UP_LATEX_SNOW_LEOPARD_MALE, SNOW_LEOPARD_PRIMARY, SNOW_LEOPARD_SECONDARY, new Item.Properties()));
+    public static final RegistryObject<ForgeSpawnEggItem> FLUFFED_UP_LATEX_SNOW_LEOPARD_FEMALE_SPAWN_EGG =
+            ITEMS.register("fluffed_up_latex_snow_leopard_female_spawn_egg",
+                    () -> new ForgeSpawnEggItem(ModEntities.FLUFFED_UP_LATEX_SNOW_LEOPARD_FEMALE, SNOW_LEOPARD_PRIMARY, SNOW_LEOPARD_SECONDARY, new Item.Properties()));
     public static final RegistryObject<ForgeSpawnEggItem> ARTIST_MOB_SPAWN_EGG =
             ITEMS.register("artist_spawn_egg",
                     () -> new ForgeSpawnEggItem(ModEntities.ARTIST, 0x5C6BC0, 0xF5F5F5, new Item.Properties()));
@@ -167,9 +194,17 @@ public class ChangedExtras {
                         output.accept(createVariantSyringeStack(CONEKAT_FEMALE_SYRINGE.get(), "conekat_female"));
                         output.accept(createVariantSyringeStack(WHITE_CAT_SYRINGE.get(), "white_cat"));
                         output.accept(createVariantSyringeStack(ARTIST_SYRINGE.get(), "artist"));
+                        output.accept(createVariantSyringeStack(PROTO_BEE_SYRINGE.get(), "proto_bee"));
+                        output.accept(createVariantSyringeStack(FURRED_LATEX_TIGER_SHARK_SYRINGE.get(), "furred_latex_tiger_shark"));
+                        output.accept(createVariantSyringeStack(FLUFFED_UP_LATEX_SNOW_LEOPARD_MALE_SYRINGE.get(), "fluffed_up_latex_snow_leopard_male"));
+                        output.accept(createVariantSyringeStack(FLUFFED_UP_LATEX_SNOW_LEOPARD_FEMALE_SYRINGE.get(), "fluffed_up_latex_snow_leopard_female"));
                         output.accept(createVariantSyringeStack(KATT_SYRINGE.get(), "katt"));
                         output.accept(KATT_SPAWN_EGG.get());
                         output.accept(JAMMER_SPAWN_EGG.get());
+                        output.accept(PROTO_BEE_SPAWN_EGG.get());
+                        output.accept(FURRED_LATEX_TIGER_SHARK_SPAWN_EGG.get());
+                        output.accept(FLUFFED_UP_LATEX_SNOW_LEOPARD_MALE_SPAWN_EGG.get());
+                        output.accept(FLUFFED_UP_LATEX_SNOW_LEOPARD_FEMALE_SPAWN_EGG.get());
                         output.accept(ARTIST_MOB_SPAWN_EGG.get());
                     })
                     .build());
@@ -184,6 +219,13 @@ public class ChangedExtras {
                         output.accept(CONEKAT_FEMALE_SPAWN_EGG.get());
                         output.accept(WHITE_CAT_SPAWN_EGG.get());
                         output.accept(ARTIST_SPAWN_EGG.get());
+                        output.accept(KATT_SPAWN_EGG.get());
+                        output.accept(JAMMER_SPAWN_EGG.get());
+                        output.accept(PROTO_BEE_SPAWN_EGG.get());
+                        output.accept(FURRED_LATEX_TIGER_SHARK_SPAWN_EGG.get());
+                        output.accept(FLUFFED_UP_LATEX_SNOW_LEOPARD_MALE_SPAWN_EGG.get());
+                        output.accept(FLUFFED_UP_LATEX_SNOW_LEOPARD_FEMALE_SPAWN_EGG.get());
+                        output.accept(ARTIST_MOB_SPAWN_EGG.get());
                         output.accept(JAMMER_HEADPHONES.get());
                     })
                     .build());
@@ -215,8 +257,20 @@ public class ChangedExtras {
     private void commonSetup(final FMLCommonSetupEvent event) {
         ChangedExtrasGameRules.bootstrap();
         ChangedExtrasNetwork.register();
+        event.enqueueWork(ChangedExtras::registerTransfurColors);
         event.enqueueWork(ChangedExtrasSpawnController::registerSpawnPlacements);
         LOGGER.info("[Changed Extras] Loaded in!");
+    }
+
+    private static void registerTransfurColors() {
+        registerEntityColor("proto_bee", PROTO_BEE_PRIMARY, PROTO_BEE_SECONDARY);
+        registerEntityColor("furred_latex_tiger_shark", TIGER_SHARK_PRIMARY, TIGER_SHARK_SECONDARY);
+        registerEntityColor("fluffed_up_latex_snow_leopard_male", SNOW_LEOPARD_PRIMARY, SNOW_LEOPARD_SECONDARY);
+        registerEntityColor("fluffed_up_latex_snow_leopard_female", SNOW_LEOPARD_PRIMARY, SNOW_LEOPARD_SECONDARY);
+    }
+
+    private static void registerEntityColor(String entityId, int primaryColor, int secondaryColor) {
+        ChangedEntities.registerEntityColor(ResourceLocation.fromNamespaceAndPath(MODID, entityId), primaryColor, secondaryColor);
     }
 
     private static ItemStack createVariantSyringeStack(Item syringeItem, String variantId) {
@@ -293,6 +347,14 @@ public class ChangedExtras {
             Syringe.setPureVariant(stack, ResourceLocation.fromNamespaceAndPath(MODID, "white_cat"));
         } else if (stack.is(ARTIST_SYRINGE.get())) {
             Syringe.setPureVariant(stack, ResourceLocation.fromNamespaceAndPath(MODID, "artist"));
+        } else if (stack.is(PROTO_BEE_SYRINGE.get())) {
+            Syringe.setPureVariant(stack, ResourceLocation.fromNamespaceAndPath(MODID, "proto_bee"));
+        } else if (stack.is(FURRED_LATEX_TIGER_SHARK_SYRINGE.get())) {
+            Syringe.setPureVariant(stack, ResourceLocation.fromNamespaceAndPath(MODID, "furred_latex_tiger_shark"));
+        } else if (stack.is(FLUFFED_UP_LATEX_SNOW_LEOPARD_MALE_SYRINGE.get())) {
+            Syringe.setPureVariant(stack, ResourceLocation.fromNamespaceAndPath(MODID, "fluffed_up_latex_snow_leopard_male"));
+        } else if (stack.is(FLUFFED_UP_LATEX_SNOW_LEOPARD_FEMALE_SYRINGE.get())) {
+            Syringe.setPureVariant(stack, ResourceLocation.fromNamespaceAndPath(MODID, "fluffed_up_latex_snow_leopard_female"));
         } else if (stack.is(CONEKAT_MALE_SYRINGE.get())) {
             Syringe.setPureVariant(stack, ResourceLocation.fromNamespaceAndPath(MODID, "conekat_male"));
         } else if (stack.is(CONEKAT_FEMALE_SYRINGE.get())) {
@@ -381,6 +443,21 @@ public class ChangedExtras {
                     ChangedExtras.LONG_SLEEVE_SHIRT.get(),
                     DyeableClothingRenderer.of(ArmorModel.CLOTHING_INNER, EquipmentSlot.CHEST)
             );
+            event.register((stack, tintIndex) -> syringeLayerColor(tintIndex, PROTO_BEE_PRIMARY, PROTO_BEE_SECONDARY),
+                    ChangedExtras.PROTO_BEE_SYRINGE.get());
+            event.register((stack, tintIndex) -> syringeLayerColor(tintIndex, TIGER_SHARK_PRIMARY, TIGER_SHARK_SECONDARY),
+                    ChangedExtras.FURRED_LATEX_TIGER_SHARK_SYRINGE.get());
+            event.register((stack, tintIndex) -> syringeLayerColor(tintIndex, SNOW_LEOPARD_PRIMARY, SNOW_LEOPARD_SECONDARY),
+                    ChangedExtras.FLUFFED_UP_LATEX_SNOW_LEOPARD_MALE_SYRINGE.get(),
+                    ChangedExtras.FLUFFED_UP_LATEX_SNOW_LEOPARD_FEMALE_SYRINGE.get());
+        }
+
+        private static int syringeLayerColor(int tintIndex, int primaryColor, int secondaryColor) {
+            return switch (tintIndex) {
+                case 0 -> primaryColor;
+                case 1 -> secondaryColor;
+                default -> 0xFFFFFF;
+            };
         }
 
         @SubscribeEvent

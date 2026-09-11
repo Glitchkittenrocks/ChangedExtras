@@ -4,12 +4,17 @@ import com.katt.changedextras.ChangedExtras;
 import com.katt.changedextras.entity.model.ConeKatFemaleEntityModel;
 import com.katt.changedextras.entity.model.ConeKatMaleEntityModel;
 import com.katt.changedextras.entity.model.ArtistEntityModel;
+import com.katt.changedextras.entity.model.FluffedUpLatexSnowLeopardFemaleEntityModel;
+import com.katt.changedextras.entity.model.FluffedUpLatexSnowLeopardMaleEntityModel;
+import com.katt.changedextras.entity.model.FurredLatexTigerSharkEntityModel;
 import com.katt.changedextras.entity.model.KattEntityModel;
+import com.katt.changedextras.entity.model.ProtoBeeEntityModel;
 import com.katt.changedextras.entity.model.WhiteCatEntityModel;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraft.resources.ResourceLocation;
 import static net.ltxprogrammer.changed.init.ChangedEntityRenderers.registerHumanoid;
 
 @Mod.EventBusSubscriber(modid = ChangedExtras.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
@@ -28,5 +33,21 @@ public class ModEntityRenderers {
                 KattRenderer::new);
         registerHumanoid(event, ModEntities.JAMMER.get(),
                 JammerRenderer::new);
+        registerHumanoid(event, ModEntities.PROTO_BEE.get(),
+                context -> new ModEntityRenderer<>(context,
+                        new ProtoBeeEntityModel(context.bakeLayer(ProtoBeeEntityModel.LAYER_LOCATION)),
+                        ResourceLocation.fromNamespaceAndPath(ChangedExtras.MODID, "textures/entity/proto_bee/proto_bee.png")));
+        registerHumanoid(event, ModEntities.FURRED_LATEX_TIGER_SHARK.get(),
+                context -> new ModEntityRenderer<>(context,
+                        new FurredLatexTigerSharkEntityModel(context.bakeLayer(FurredLatexTigerSharkEntityModel.LAYER_LOCATION)),
+                        ResourceLocation.fromNamespaceAndPath(ChangedExtras.MODID, "textures/entity/furred_latex_tiger_shark/furred_latex_tiger_shark.png")));
+        registerHumanoid(event, ModEntities.FLUFFED_UP_LATEX_SNOW_LEOPARD_MALE.get(),
+                context -> new ModEntityRenderer<>(context,
+                        new FluffedUpLatexSnowLeopardMaleEntityModel(context.bakeLayer(FluffedUpLatexSnowLeopardMaleEntityModel.LAYER_LOCATION)),
+                        ResourceLocation.fromNamespaceAndPath(ChangedExtras.MODID, "textures/entity/fluffed_up_latex_snow_leopard_male/fluffed_up_latex_snow_leopard_male.png")));
+        registerHumanoid(event, ModEntities.FLUFFED_UP_LATEX_SNOW_LEOPARD_FEMALE.get(),
+                context -> new ModEntityRenderer<>(context,
+                        new FluffedUpLatexSnowLeopardFemaleEntityModel(context.bakeLayer(FluffedUpLatexSnowLeopardFemaleEntityModel.LAYER_LOCATION)),
+                        ResourceLocation.fromNamespaceAndPath(ChangedExtras.MODID, "textures/entity/fluffed_up_latex_snow_leopard_female/fluffed_up_latex_snow_leopard_female.png")));
     }
 }
