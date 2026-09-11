@@ -12,6 +12,7 @@ import com.katt.changedextras.entity.beasts.ArtistEntity;
 import com.katt.changedextras.entity.beasts.ProtoBeeEntity;
 import com.katt.changedextras.entity.beasts.WhiteCatEntity;
 import com.katt.changedextras.init.ChangedExtrasAbilities;
+import net.foxyas.changedaddon.init.ChangedAddonAbilities;
 import net.ltxprogrammer.changed.entity.variant.GenderedPair;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.init.ChangedAbilities;
@@ -86,9 +87,10 @@ public class ModTransfurVariants {
                             .nightVision()
                             .addAbility(ChangedAbilities.GRAB_ENTITY_ABILITY)
                             .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION)
+                            .addAbility(ChangedAddonAbilities.POLLEN_CARRY)
                             .addAbility(ChangedExtrasAbilities.CLAWS)
                             .reducedFall(true)
-                            .extraJumps(1)
+                            .extraJumps(3)
                             .build());
 
     public static final RegistryObject<TransfurVariant<FurredLatexTigerSharkEntity>> FURRED_LATEX_TIGER_SHARK =
