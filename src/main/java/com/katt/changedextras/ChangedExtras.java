@@ -28,6 +28,8 @@ import com.katt.changedextras.network.DiscoveryNetwork;
 import com.katt.changedextras.network.JackpotStatePacket;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.logging.LogUtils;
+import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
+import net.ltxprogrammer.changed.init.ChangedGameRules;
 import net.ltxprogrammer.changed.item.LatexSyringe;
 import net.ltxprogrammer.changed.item.Syringe;
 import net.ltxprogrammer.changed.init.ChangedEntities;
@@ -38,7 +40,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
@@ -74,14 +79,42 @@ import net.ltxprogrammer.changed.client.renderer.layers.AccessoryLayer;
 import net.ltxprogrammer.changed.client.renderer.model.armor.ArmorModel;
 import net.minecraft.world.entity.EquipmentSlot;
 
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.function.Supplier;
 
 @Mod(ChangedExtras.MODID)
 public class ChangedExtras {
 
     private static final String ICECREAM_STREAK_TAG = "changedextras.icecream_streak";
-    private static final String SPECIAL_VARIANT_GIVEN_TAG = "changedextras.special_variant_given";
-    private static final UUID SPECIAL_PLAYER_UUID = UUID.fromString("70080b3e-8cf3-46f3-922e-7b3a32269935");
+    public static final String RECEIVED_STARTER_KIT_TAG = "changedextras.received_starter_kit";
+    public static final String SPECIAL_CHOICE_MADE_TAG = "changedextras.special_choice_made";
+
+    public record SpecialPlayerData(
+            Supplier<? extends TransfurVariant<?>> variantSupplier,
+            Supplier<? extends Item> syringeSupplier,
+            String variantId,
+            String displayName,
+            Supplier<List<ItemStack>> extraItemsSupplier
+    ) {
+        public SpecialPlayerData(
+                Supplier<? extends TransfurVariant<?>> variantSupplier,
+                Supplier<? extends Item> syringeSupplier,
+                String variantId,
+                String displayName
+        ) {
+            this(variantSupplier, syringeSupplier, variantId, displayName, List::of);
+        }
+    }
+
+    public static final UUID SPECIAL_PLAYER_UUID = UUID.fromString("70080b3e-8cf3-46f3-922e-7b3a32269935");
+    public static final UUID JAMMER_PLAYER_UUID = UUID.fromString("28a686cf-a2e5-49a0-8420-3c4ca52d6b5c");
+
+    public static final Map<UUID, SpecialPlayerData> SPECIAL_PLAYERS = Map.of(
+            SPECIAL_PLAYER_UUID, new SpecialPlayerData(ModTransfurVariants.KATT, () -> ChangedExtras.KATT_SYRINGE.get(), "katt", "Katt"),
+            JAMMER_PLAYER_UUID, new SpecialPlayerData(ModTransfurVariants.JAMMER, () -> null, "jammer", "Jammer", () -> List.of(new ItemStack(ChangedExtras.JAMMER_HEADPHONES.get())))
+    );
 
     public static final String MODID = "changedextras";
     public static final Logger LOGGER = LogUtils.getLogger();
@@ -273,7 +306,7 @@ public class ChangedExtras {
         ChangedEntities.registerEntityColor(ResourceLocation.fromNamespaceAndPath(MODID, entityId), primaryColor, secondaryColor);
     }
 
-    private static ItemStack createVariantSyringeStack(Item syringeItem, String variantId) {
+    public static ItemStack createVariantSyringeStack(Item syringeItem, String variantId) {
         return Syringe.setPureVariant(
                 new ItemStack(syringeItem),
                 ResourceLocation.fromNamespaceAndPath(MODID, variantId));
@@ -304,24 +337,82 @@ public class ChangedExtras {
     }
 
     @SubscribeEvent
-    public void onPlayerFirstJoin(PlayerEvent.PlayerLoggedInEvent event) {
+    public void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
         if (!(event.getEntity() instanceof ServerPlayer player)) return;
 
-        if (!player.getUUID().equals(SPECIAL_PLAYER_UUID)) {
-            return;
-        }
+        SpecialPlayerData specialData = SPECIAL_PLAYERS.get(player.getUUID());
+        if (specialData == null) return;
 
         CompoundTag data = player.getPersistentData();
-        if (!data.getBoolean("changedextras.received_starter_kit")) {
 
-            ItemStack starterSyringe = createVariantSyringeStack(KATT_SYRINGE.get(), "katt");
-
-            if (!player.getInventory().add(starterSyringe)) {
-                player.drop(starterSyringe, false);
+        // 1. Give starter items on first join (not on respawn)
+        if (!data.getBoolean(RECEIVED_STARTER_KIT_TAG)) {
+            if (specialData.syringeSupplier() != null && specialData.syringeSupplier().get() != null) {
+                ItemStack starterSyringe = createVariantSyringeStack(specialData.syringeSupplier().get(), specialData.variantId());
+                if (!player.getInventory().add(starterSyringe)) {
+                    player.drop(starterSyringe, false);
+                }
             }
-
-            data.putBoolean("changedextras.received_starter_kit", true);
+            if (specialData.extraItemsSupplier() != null) {
+                for (ItemStack extraStack : specialData.extraItemsSupplier().get()) {
+                    if (!player.getInventory().add(extraStack.copy())) {
+                        player.drop(extraStack.copy(), false);
+                    }
+                }
+            }
+            data.putBoolean(RECEIVED_STARTER_KIT_TAG, true);
         }
+
+        // 2. Prompt in chat if they haven't made their choice yet
+        if (!data.getBoolean(SPECIAL_CHOICE_MADE_TAG)) {
+            sendTransfurPrompt(player, specialData);
+        }
+    }
+
+    @SubscribeEvent
+    public void onPlayerClone(PlayerEvent.Clone event) {
+        CompoundTag oldData = event.getOriginal().getPersistentData();
+        CompoundTag newData = event.getEntity().getPersistentData();
+        if (oldData.contains(RECEIVED_STARTER_KIT_TAG)) {
+            newData.putBoolean(RECEIVED_STARTER_KIT_TAG, oldData.getBoolean(RECEIVED_STARTER_KIT_TAG));
+        }
+        if (oldData.contains(SPECIAL_CHOICE_MADE_TAG)) {
+            newData.putBoolean(SPECIAL_CHOICE_MADE_TAG, oldData.getBoolean(SPECIAL_CHOICE_MADE_TAG));
+        }
+    }
+
+    public static void sendTransfurPrompt(ServerPlayer player, SpecialPlayerData specialData) {
+        MutableComponent yesBtn = Component.literal("[✔ Yes]")
+                .withStyle(style -> style
+                        .withColor(ChatFormatting.GREEN)
+                        .withBold(true)
+                        .withClickEvent(new ClickEvent(
+                                ClickEvent.Action.RUN_COMMAND,
+                                "/changedextras choice yes"
+                        ))
+                        .withHoverEvent(new HoverEvent(
+                                HoverEvent.Action.SHOW_TEXT,
+                                Component.literal("§aClick to start transfurred as " + specialData.displayName())
+                        )));
+
+        MutableComponent noBtn = Component.literal("[✖ No]")
+                .withStyle(style -> style
+                        .withColor(ChatFormatting.RED)
+                        .withBold(true)
+                        .withClickEvent(new ClickEvent(
+                                ClickEvent.Action.RUN_COMMAND,
+                                "/changedextras choice no"
+                        ))
+                        .withHoverEvent(new HoverEvent(
+                                HoverEvent.Action.SHOW_TEXT,
+                                Component.literal("§cClick to remain human")
+                        )));
+
+        player.sendSystemMessage(Component.literal("§6[Changed Extras] §fWould you like to start transfurred as §b" + specialData.displayName() + "§f?"));
+        if (!player.serverLevel().getGameRules().getBoolean(ChangedGameRules.RULE_KEEP_FORM)) {
+            player.sendSystemMessage(Component.literal("§e§lWarning: §cThis world doesnt have keep form enabled, whenever you die, you'll lose your form"));
+        }
+        player.sendSystemMessage(Component.literal("  ").append(yesBtn).append(Component.literal("    ")).append(noBtn));
     }
 
     @SubscribeEvent
@@ -379,27 +470,6 @@ public class ChangedExtras {
             return;
         }
         player.getPersistentData().putInt(ICECREAM_STREAK_TAG, 0);
-    }
-
-    @SubscribeEvent
-    public void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
-        assignSpecialVariant(event.getEntity());
-    }
-
-    @SubscribeEvent
-    public void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
-        assignSpecialVariant(event.getEntity());
-    }
-
-    private static void assignSpecialVariant(net.minecraft.world.entity.player.Player player) {
-        if (!(player instanceof ServerPlayer serverPlayer)) return;
-        if (!SPECIAL_PLAYER_UUID.equals(serverPlayer.getUUID())) return;
-
-        CompoundTag persistentData = serverPlayer.getPersistentData();
-        if (!persistentData.getBoolean(SPECIAL_VARIANT_GIVEN_TAG)) {
-            ProcessTransfur.setPlayerTransfurVariant(serverPlayer, ModTransfurVariants.KATT.get());
-            persistentData.putBoolean(SPECIAL_VARIANT_GIVEN_TAG, true);
-        }
     }
 
     @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)

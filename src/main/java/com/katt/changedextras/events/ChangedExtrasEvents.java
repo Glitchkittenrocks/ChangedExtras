@@ -1,6 +1,7 @@
 package com.katt.changedextras.events;
 
 import com.katt.changedextras.ChangedExtras;
+import com.katt.changedextras.ability.ParryAbility;
 import com.katt.changedextras.common.ExoskeletonVisorStyle;
 import com.katt.changedextras.entity.beasts.KattEntity;
 import com.katt.changedextras.network.JackpotStatePacket;
@@ -41,6 +42,37 @@ public class ChangedExtrasEvents {
         syncExoskeletonVisorColor(living);
         tickJackpot(living);
         tickJackpotAftermath(living);
+        tickParrySpam(living);
+    }
+
+    private static void tickParrySpam(LivingEntity living) {
+        CompoundTag data = living.getPersistentData();
+        if (data.getBoolean(NBT_TAG)) {
+            if (data.contains(ParryAbility.PARRY_SPAM_COUNT_TAG) || data.contains(ParryAbility.PARRY_READY_FOR_SPAM_TAG)) {
+                data.remove(ParryAbility.PARRY_COUNT_TAG);
+                data.remove(ParryAbility.PARRY_READY_FOR_SPAM_TAG);
+                data.remove(ParryAbility.PARRY_SPAM_COUNT_TAG);
+                data.remove(ParryAbility.PARRY_SPAM_DECAY_TAG);
+                data.remove(ParryAbility.HEARTBEAT_PLAYING_TAG);
+            }
+            return;
+        }
+
+        if (data.getBoolean(ParryAbility.PARRY_READY_FOR_SPAM_TAG)) {
+            int decay = data.getInt(ParryAbility.PARRY_SPAM_DECAY_TAG);
+            if (decay > 0) {
+                decay--;
+                if (decay <= 0) {
+                    data.remove(ParryAbility.PARRY_SPAM_COUNT_TAG);
+                    data.remove(ParryAbility.PARRY_SPAM_DECAY_TAG);
+                    data.remove(ParryAbility.HEARTBEAT_PLAYING_TAG);
+                    living.removeEffect(MobEffects.BLINDNESS);
+                } else {
+                    data.putInt(ParryAbility.PARRY_SPAM_DECAY_TAG, decay);
+                    living.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 40, 0, false, false, false));
+                }
+            }
+        }
     }
 
     private static void syncExoskeletonVisorColor(LivingEntity living) {

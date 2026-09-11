@@ -22,7 +22,7 @@
   "ability.changedextras.jackpot_aura.name": "Cursed Technique: Instant Jackpot",
   "ability.changedextras.jackpot_aura.description": "In other words, In the 4 minutes and 11 seconds following a jackpot, Hakari is effectively immortal.",
   "ability.changedextras.parry.name": "Parry",
-  "ability.changedextras.parry.description": "Block incoming melee attacks with your right fist and counter with your left, returning 90% damage. Parry 5 attacks to unleash Jackpot!",
+  "ability.changedextras.parry.description": "Your cursed technique requires you to parry 5 times before getting it's full potential. Infinite cursed energy for 4 minutes. and 11 seconds.",
 
   "3 | Type": "Entity names",
   "entity.changedextras.conekat_male": "Cone Kat Male",
@@ -165,6 +165,8 @@
   "changedextras.discovery.ping_pending": "Pinging...",
 
   "12 | Type": "Subtitles",
-  "subtitles.changedextras.jackpot_song": "Tripping on love - Ashley Collins plays",
-  "subtitles.changedextras.jackpot_stop": "Suddenly the music stops"
+  "subtitles.changedextras.jackpot_song": "Private pure love train plays",
+  "subtitles.changedextras.jackpot_stop": "Suddenly the music stops",
+  "subtitles.changedextras.parry": "Attack Parried",
+  "subtitles.changedextras.heartbeat": "Heart beats rapidly"
 }
