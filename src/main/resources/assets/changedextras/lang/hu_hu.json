@@ -3,7 +3,7 @@
   "en_us.addon.changedextras.cone_kat.name": "Fagylaltmacska",
   "en_us.addon.changedextras.cone_kat.name.male": "Fagylaltmacska (Hím)",
   "en_us.addon.changedextras.cone_kat.name.female": "Fagylaltmacska (Nőstény)",
-  "en_us.addon.changedextras.cone_kat.description": "Egy életforma, amelyet az emberek táplálására és a világméretű éhezés megszüntetésére hoztak létre, Resurgencedből származik, ott Goopie-ként vagy Foodie-ként ismert",
+  "en_us.addon.changedextras.cone_kat.description": "Egy életforma, amelyet az emberek táplálására és a világméretű éhezés megszűntetésére hoztak létre, Resurgencedből származik, ott Goopie-ként vagy Foodie-ként ismert",
 
   "2 | Type": "Képességek",
   "ability.changedextras.claws.name": "Mancsok",
@@ -21,6 +21,8 @@
   "ability.changedextras.jackpot_aura": "Átkozott technika: Azonnali jackpot",
   "ability.changedextras.jackpot_aura.name": "Átkozott technika: Azonnali jackpot",
   "ability.changedextras.jackpot_aura.description": "Más szóval, a jackpotot követő 4 percben és 11 másodpercben Hakari gyakorlatilag halhatatlanná válik.",
+  "ability.changedextras.parry.name": "Hárítás",
+  "ability.changedextras.parry.description": "Hárítsd a bejövő közelharci támadásokat a jobb öklöddel, és vágj vissza a ballal, a sebzés 90%-át visszatérítve. Háríts 5 támadást a Jackpot feloldásához!",
 
   "3 | Type": "Entitás nevek",
   "entity.changedextras.conekat_male": "Hím fagylaltmacska",
@@ -50,7 +52,7 @@
   "item.changedextras.white_cat_spawn_egg": "Fehér macskát idéző tojás",
   "item.changedextras.sketch": "Mestermű vázlat",
   "item.changedextras.icecream": "Fagylalt",
-  "item.changedextras.long_sleeve_shirt": "Hosszú ujjú poló",
+  "item.changedextras.long_sleeve_shirt": "Hosszú ujjú póló",
   "item.changedextras.sterile_swab": "Steril mintavevő pálca",
   "item.changedextras.used_swab": "Használt mintavevő pálca",
   "item.changedextras.vial": "Fiola",

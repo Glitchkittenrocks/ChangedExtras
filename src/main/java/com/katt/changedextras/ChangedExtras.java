@@ -135,13 +135,13 @@ public class ChangedExtras {
     public static final RegistryObject<Item> VIAL =
             ITEMS.register("vial", () -> new Item(new Item.Properties().stacksTo(1)));
     public static final RegistryObject<Item> USED_VIAL =
-            ITEMS.register("used_vial", () -> new UsedVialItem(new Item.Properties().stacksTo(1)));
+            ITEMS.register("used_vial", () -> new Item(new Item.Properties().stacksTo(1)));
     public static final RegistryObject<Item> PROCESSED_VIAL =
             ITEMS.register("processed_vial", () -> new Item(new Item.Properties().stacksTo(1)));
     public static final RegistryObject<Item> PALE_TEST =
             ITEMS.register("pale_test", () -> new PaleTestItem(new Item.Properties().stacksTo(1)));
 
-    // The Player-Locked Katt Syringe
+    // The Katt Syringe (Usable by everyone)
     public static final RegistryObject<LatexSyringe> KATT_SYRINGE =
             ITEMS.register("katt_syringe", () -> new LatexSyringe(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC)));
 
@@ -327,18 +327,9 @@ public class ChangedExtras {
     @SubscribeEvent
     public void onItemUseStart(LivingEntityUseItemEvent.Start event) {
         ItemStack stack = event.getItem();
-        LivingEntity user = event.getEntity();
 
-        // Lock the Katt Syringe to the special UUID
+        // Katt Syringe is now usable by everyone
         if (stack.is(KATT_SYRINGE.get())) {
-            if (!user.getUUID().equals(SPECIAL_PLAYER_UUID)) {
-                if (user instanceof net.minecraft.world.entity.player.Player player) {
-                    player.displayClientMessage(Component.translatable("message.changedextras.locked_syringe")
-                            .withStyle(ChatFormatting.RED), true);
-                }
-                event.setCanceled(true);
-                return;
-            }
             Syringe.setPureVariant(stack, ResourceLocation.fromNamespaceAndPath(MODID, "katt"));
         }
 

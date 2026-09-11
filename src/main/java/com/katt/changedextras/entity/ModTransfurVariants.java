@@ -64,12 +64,11 @@ public class ModTransfurVariants {
                             .addAbility(ChangedAbilities.GRAB_ENTITY_ABILITY)
                             .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION)
                             .addAbility(ChangedAbilities.SWITCH_TRANSFUR_MODE)
-                            .addAbility(ChangedExtrasAbilities.JACKPOT_AURA)
+                            .addAbility(ChangedExtrasAbilities.PARRY)
                             .addAbility(ChangedExtrasAbilities.CLAWS)
                             .addAbility(ChangedAbilities.HYPNOSIS)
                             .reducedFall(true)
                             .extraJumps(2)
-
                             .build());
 
     public static final RegistryObject<TransfurVariant<JammerEntity>> JAMMER =

@@ -21,6 +21,8 @@
   "ability.changedextras.jackpot_aura": "Cursed Technique: Instant Jackpot",
   "ability.changedextras.jackpot_aura.name": "Cursed Technique: Instant Jackpot",
   "ability.changedextras.jackpot_aura.description": "In other words, In the 4 minutes and 11 seconds following a jackpot, Hakari is effectively immortal.",
+  "ability.changedextras.parry.name": "Parry",
+  "ability.changedextras.parry.description": "Block incoming melee attacks with your right fist and counter with your left, returning 90% damage. Parry 5 attacks to unleash Jackpot!",
 
   "3 | Type": "Entity names",
   "entity.changedextras.conekat_male": "Cone Kat Male",
@@ -142,7 +144,7 @@
   "gamerule.changedextrasConekatMaleNaturalSpawns.description": "Whether Cone Kat Male can spawn naturally.",
   "gamerule.changedextrasConekatFemaleNaturalSpawns": "Cone Kat Female Natural Spawns",
   "gamerule.changedextrasConekatFemaleNaturalSpawns.description": "Whether Cone Kat Female can spawn naturally.",
-  "gamerule.changedextrasWhiteCatNaturalSpawns": "White Cat Natural Spawns",
+  "gamerule.changedextrasWhiteCatNaturalSpawns": "White Kat Natural Spawns",
   "gamerule.changedextrasWhiteCatNaturalSpawns.description": "Whether White Cat can spawn naturally.",
   "gamerule.changedextrasArtistNaturalSpawns": "Artist Natural Spawns",
   "gamerule.changedextrasArtistNaturalSpawns.description": "Whether The Artist can spawn naturally.",
